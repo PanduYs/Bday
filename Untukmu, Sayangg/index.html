@@ -1,0 +1,764 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Untukmu, Sayang</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&family=Dancing+Script:wght@600;700&family=EB+Garamond:ital@0;1&family=Special+Elite&display=swap">
+<style>
+/* ============================================================
+   DESIGN TOKENS — scrapbook romantis (maroon + cream, analog)
+   Layout: section full-screen ditumpuk, kolase asimetris, kartu
+   gelap/terang selang-seling, tekstur kertas di tiap band.
+   ============================================================ */
+:root{
+  --maroon:#5e1420;        /* burgundy tua  */
+  --maroon-deep:#430d16;   /* lebih gelap   */
+  --cream:#f3e7d3;         /* ivory kertas  */
+  --cream-soft:#efe1c9;
+  --ink:#3a2626;           /* teks di cream */
+  --rose:#d98c9a;          /* aksen lembut  */
+  --rose-deep:#b2495b;
+  --heart:#c02a3c;         /* merah hati    */
+  --gold:#c9a96a;          /* emas pudar    */
+  --cream-text:#f6ecdd;    /* teks di maroon*/
+  --tape:rgba(226,214,190,.62);
+
+  --f-display:"Playfair Display",Georgia,serif;
+  --f-script:"Dancing Script","Brush Script MT",cursive;
+  --f-type:"Special Elite","Courier New",monospace;
+  --f-body:"EB Garamond",Georgia,serif;
+
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--maroon-deep);color:var(--cream-text);
+  font-family:var(--f-body);font-size:18px;line-height:1.7;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+/* saat gate masih tertutup, kunci scroll */
+body.locked{overflow:hidden;height:100%}
+
+img{max-width:100%;display:block}
+h1,h2,h3{margin:0;text-wrap:balance}
+
+/* paper grain overlay global, halus */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:4;opacity:.05;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode:overlay}
+
+/* ---------- SECTION / BAND ---------- */
+section{position:relative;overflow:hidden}
+.band-maroon{background:
+  radial-gradient(130% 90% at 50% 0%,#6d1927 0%,var(--maroon) 45%,var(--maroon-deep) 100%)}
+.band-cream{background:
+  radial-gradient(120% 80% at 50% 10%,#faf0dd 0%,var(--cream) 55%,var(--cream-soft) 100%);
+  color:var(--ink)}
+.wrap{
+  max-width:1080px;margin:0 auto;
+  padding-left:max(20px,env(safe-area-inset-left,0px));
+  padding-right:max(20px,env(safe-area-inset-right,0px));
+  padding-block:clamp(72px,12vh,128px);
+  position:relative;z-index:2;
+}
+
+/* ---------- TYPOGRAFI ---------- */
+.eyebrow{font-family:var(--f-type);font-size:.74rem;letter-spacing:.28em;
+  text-transform:uppercase;opacity:.72}
+.script{font-family:var(--f-script);line-height:1}
+.display{font-family:var(--f-display);font-style:italic;line-height:1.05;
+  letter-spacing:-.01em}
+.letter-body{font-family:var(--f-type);font-size:1rem;line-height:1.95}
+
+/* ---------- POLAROID ---------- */
+.polaroid{background:#fbf6ec;padding:12px 12px 44px;border-radius:3px;
+  box-shadow:0 16px 34px rgba(20,6,10,.42),0 2px 6px rgba(20,6,10,.3);
+  position:relative}
+.polaroid img{border-radius:2px;filter:saturate(.96) contrast(1.02)}
+.polaroid .cap{position:absolute;left:0;right:0;bottom:12px;text-align:center;
+  font-family:var(--f-script);font-size:1.35rem;color:#6a4b2f}
+.tape{position:absolute;width:92px;height:30px;background:var(--tape);
+  box-shadow:0 2px 5px rgba(0,0,0,.18);z-index:3;
+  -webkit-backdrop-filter:blur(1px);mix-blend-mode:multiply}
+.tape::after{content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,transparent 0 6px,rgba(255,255,255,.18) 6px 12px)}
+
+/* reveal: mulai dari keadaan terlihat lembut, lalu halus naik */
+.reveal{opacity:1;transform:none}
+@media (prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(26px);
+    transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+}
+
+/* decor sprites */
+.decor{position:absolute;pointer-events:none;z-index:1}
+.spin-slow{animation:spin 26s linear infinite}
+@media (prefers-reduced-motion:reduce){.spin-slow{animation:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ============================================================
+   0 — INTRO / GATE (amplop)
+   ============================================================ */
+#gate{position:fixed;inset:0;z-index:30;display:grid;place-items:center;
+  text-align:center;padding:24px;
+  padding-top:max(24px,env(safe-area-inset-top,0px));
+  padding-bottom:max(24px,env(safe-area-inset-bottom,0px));
+  background:radial-gradient(120% 90% at 50% 40%,#6d1927,#3a0b13 80%)}
+#gate.gone{opacity:0;visibility:hidden;transition:opacity .9s ease,visibility 0s .9s}
+.gate-inner{display:flex;flex-direction:column;align-items:center;gap:26px}
+.gate-eyebrow{font-family:var(--f-type);letter-spacing:.3em;font-size:.72rem;
+  text-transform:uppercase;color:var(--rose)}
+.gate-title{font-family:var(--f-display);font-style:italic;font-size:clamp(2rem,7vw,3.2rem)}
+.gate-hint{font-family:var(--f-script);font-size:1.5rem;color:var(--gold)}
+
+/* amplop CSS */
+.env{--w:min(78vw,300px);width:var(--w);height:calc(var(--w)*.68);position:relative;
+  cursor:pointer;filter:drop-shadow(0 20px 30px rgba(0,0,0,.45));
+  transition:transform .4s ease}
+.env:hover{transform:translateY(-4px) scale(1.02)}
+.env .body{position:absolute;inset:0;background:linear-gradient(135deg,#f3e7d2,#e4d3b4);
+  border-radius:8px;overflow:hidden}
+.env .pocket{position:absolute;inset:0;
+  background:
+    linear-gradient(42deg,#e9d8ba 0 50%,transparent 50%) left/51% 100% no-repeat,
+    linear-gradient(-42deg,#e9d8ba 0 50%,transparent 50%) right/51% 100% no-repeat,
+    linear-gradient(#d8c39f,#d8c39f) bottom/100% 60% no-repeat}
+.env .letter-pop{position:absolute;left:8%;right:8%;top:14%;bottom:30%;
+  background:#fffaf0;border-radius:4px;box-shadow:0 6px 14px rgba(0,0,0,.2);
+  transition:transform .7s cubic-bezier(.3,.8,.2,1);z-index:2}
+.env .flap{position:absolute;left:0;right:0;top:0;height:54%;transform-origin:top;
+  background:linear-gradient(#efdcbb,#e0cca6);
+  clip-path:polygon(0 0,100% 0,50% 100%);z-index:4;
+  transition:transform .6s ease,z-index 0s .3s}
+.env .seal{position:absolute;left:50%;top:40%;width:46px;height:46px;margin:-23px;
+  border-radius:50%;background:radial-gradient(circle at 40% 35%,#d14257,var(--heart));
+  display:grid;place-items:center;color:#ffd9df;font-family:var(--f-script);
+  font-size:1.3rem;z-index:5;box-shadow:0 3px 8px rgba(0,0,0,.35)}
+.env.open .flap{transform:rotateX(180deg);z-index:1}
+.env.open .seal{opacity:0;transition:opacity .25s}
+.env.open .letter-pop{transform:translateY(-38%)}
+
+.gate-btn{font-family:var(--f-type);letter-spacing:.12em;text-transform:uppercase;
+  font-size:.8rem;color:var(--cream-text);background:transparent;
+  border:1px solid rgba(246,236,221,.4);border-radius:999px;padding:12px 26px;
+  cursor:pointer;transition:background .3s,border-color .3s}
+.gate-btn:hover{background:rgba(246,236,221,.1);border-color:var(--cream-text)}
+
+#confetti{position:fixed;inset:0;z-index:28;pointer-events:none}
+
+/* ============================================================
+   1 — COVER
+   ============================================================ */
+#cover .wrap{min-height:92vh;display:grid;
+  grid-template-columns:1.05fr .95fr;align-items:center;gap:28px}
+.cover-text .eyebrow{color:var(--rose)}
+.cover-hi{font-family:var(--f-script);font-size:clamp(3.2rem,11vw,6rem);
+  color:var(--cream-text);margin:.1em 0 -.1em}
+.cover-name{font-family:var(--f-display);font-style:italic;
+  font-size:clamp(1.8rem,5.5vw,2.8rem);color:var(--gold)}
+.cover-date{font-family:var(--f-type);letter-spacing:.2em;font-size:.82rem;
+  margin-top:1.1em;opacity:.8}
+.cover-tag{font-family:var(--f-body);font-style:italic;opacity:.85;
+  max-width:34ch;margin-top:1em}
+.cover-photo{position:relative;justify-self:center}
+.cover-photo img{width:min(78vw,380px);
+  filter:drop-shadow(0 26px 40px rgba(12,3,6,.6))}
+.cover-glow{position:absolute;inset:-6% -4% -2%;z-index:-1;border-radius:50%/42%;
+  background:radial-gradient(circle,rgba(217,140,154,.5),transparent 68%);
+  filter:blur(14px)}
+
+/* ============================================================
+   2 — SURAT PEMBUKA
+   ============================================================ */
+#opening .wrap{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.open-copy h2{font-family:var(--f-display);font-style:italic;
+  font-size:clamp(1.7rem,4.5vw,2.5rem);margin-bottom:.5em}
+.open-copy .eyebrow{color:var(--rose-deep)}
+.open-copy p{max-width:40ch}
+.open-art{position:relative;min-height:360px}
+.open-art .cut{position:absolute;filter:drop-shadow(0 16px 26px rgba(80,30,40,.3))}
+.open-art .c1{width:66%;left:4%;top:0;z-index:2}
+.open-art .c2{width:48%;right:2%;bottom:2%;z-index:1;transform:rotate(4deg)}
+.open-art .c2 .polaroid{padding:9px 9px 34px}
+
+/* ============================================================
+   3 — FAVORITE MOMENTS
+   ============================================================ */
+#moments .head{text-align:center;margin-bottom:46px}
+#moments .eyebrow{color:var(--rose)}
+#moments h2{font-family:var(--f-display);font-style:italic;
+  font-size:clamp(2rem,6vw,3.1rem)}
+#moments h2 em{font-family:var(--f-script);font-style:normal;color:var(--gold);
+  font-size:1.15em}
+.collage{display:flex;flex-wrap:wrap;justify-content:center;
+  align-items:flex-start;gap:clamp(14px,3vw,34px)}
+.collage .polaroid{width:clamp(150px,30%,236px)}
+.collage .polaroid:nth-child(1){transform:rotate(-5deg)}
+.collage .polaroid:nth-child(2){transform:rotate(3deg);margin-top:28px}
+.collage .polaroid:nth-child(3){transform:rotate(-2deg)}
+.collage .polaroid:nth-child(4){transform:rotate(4deg);margin-top:18px}
+.collage .polaroid:nth-child(5){transform:rotate(-4deg)}
+@media (prefers-reduced-motion:no-preference){
+  .collage .polaroid{transition:transform .4s ease}
+  .collage .polaroid:hover{transform:rotate(0) translateY(-8px) scale(1.03);z-index:5}
+}
+
+/* ============================================================
+   4 — THIS SONG
+   ============================================================ */
+#song .wrap{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
+#song .eyebrow{color:var(--rose)}
+#song h2{font-family:var(--f-display);font-style:italic;
+  font-size:clamp(1.7rem,4.8vw,2.6rem);margin:.3em 0}
+#song .ded{font-family:var(--f-body);font-style:italic;max-width:34ch;opacity:.9}
+.player{display:flex;align-items:center;gap:16px;margin-top:28px;
+  background:rgba(0,0,0,.22);border:1px solid rgba(246,236,221,.16);
+  border-radius:16px;padding:14px 18px;max-width:340px}
+.play-btn{flex:none;width:52px;height:52px;border-radius:50%;cursor:pointer;
+  border:none;background:radial-gradient(circle at 38% 34%,#e26275,var(--heart));
+  color:#fff2f4;display:grid;place-items:center;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.play-btn svg{width:20px;height:20px}
+.track-meta{min-width:0}
+.track-title{font-family:var(--f-type);font-size:.9rem;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.track-sub{font-size:.85rem;opacity:.7}
+.vinyl-wrap{position:relative;justify-self:center;width:min(74vw,330px);aspect-ratio:1}
+.vinyl{position:absolute;inset:0;border-radius:50%;
+  background:
+    repeating-radial-gradient(circle at 50% 50%,#1a1013 0 2px,#0d080a 2px 4px);
+  box-shadow:0 22px 40px rgba(0,0,0,.5);display:grid;place-items:center}
+.vinyl::after{content:"";width:34%;height:34%;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#e26275,var(--rose-deep));
+  box-shadow:inset 0 0 0 6px rgba(0,0,0,.25)}
+.vinyl.playing{animation:spin 4.5s linear infinite}
+
+/* ============================================================
+   5 — REASONS I LOVE YOU
+   ============================================================ */
+#reasons .head{text-align:center;margin-bottom:46px}
+#reasons .eyebrow{color:var(--rose-deep)}
+#reasons h2{font-family:var(--f-display);font-style:italic;color:var(--ink);
+  font-size:clamp(2rem,6vw,3.1rem)}
+#reasons h2 em{font-family:var(--f-script);font-style:normal;color:var(--rose-deep)}
+.reasons-grid{display:grid;grid-template-columns:repeat(3,1fr);
+  gap:clamp(16px,3vw,32px)}
+.reason{display:flex;flex-direction:column;gap:12px;align-items:center;
+  text-align:center}
+.reason .frame{background:#fff;padding:8px;border-radius:3px;
+  box-shadow:0 10px 22px rgba(90,40,50,.22);width:100%}
+.reason:nth-child(odd) .frame{transform:rotate(-2deg)}
+.reason:nth-child(even) .frame{transform:rotate(2deg)}
+.reason .frame img{aspect-ratio:1;object-fit:cover;border-radius:2px}
+.reason .n{font-family:var(--f-type);font-size:.72rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--rose-deep)}
+.reason p{margin:0;color:var(--ink);font-style:italic;max-width:26ch}
+
+/* ============================================================
+   6 — 3 WORDS
+   ============================================================ */
+#words .head{text-align:center;margin-bottom:44px}
+#words .eyebrow{color:var(--rose)}
+#words h2{font-family:var(--f-display);font-style:italic;
+  font-size:clamp(1.7rem,5vw,2.6rem)}
+.words-row{display:flex;flex-wrap:wrap;justify-content:center;
+  gap:clamp(18px,4vw,46px)}
+.word{display:flex;flex-direction:column;align-items:center;gap:14px}
+.word .polaroid{width:clamp(150px,26vw,210px)}
+.word:nth-child(1) .polaroid{transform:rotate(-4deg)}
+.word:nth-child(2) .polaroid{transform:rotate(2deg);margin-top:22px}
+.word:nth-child(3) .polaroid{transform:rotate(-2deg)}
+.word .w{font-family:var(--f-script);font-size:2.2rem;color:var(--gold)}
+
+/* ============================================================
+   7 — A LETTER FOR YOU
+   ============================================================ */
+#letter .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:40px;
+  align-items:center}
+.letter-art{position:relative;min-height:380px}
+.letter-art .polaroid{position:absolute;width:52%}
+.letter-art .p1{left:0;top:0;transform:rotate(-6deg);z-index:1}
+.letter-art .p2{right:2%;top:12%;transform:rotate(5deg);z-index:3;width:50%}
+.letter-art .p3{left:16%;bottom:0;transform:rotate(-2deg);z-index:2;width:50%}
+.letter-paper{background:
+    linear-gradient(#fbf4e6,#f6ecd6);color:#4a3526;border-radius:4px;
+  padding:clamp(22px,4vw,40px);position:relative;
+  box-shadow:0 18px 40px rgba(20,6,10,.4);
+  background-image:repeating-linear-gradient(#fbf4e6 0 31px,#e7d9bf 31px 32px)}
+.letter-paper h2{font-family:var(--f-display);font-style:italic;
+  font-size:clamp(1.5rem,4vw,2.1rem);margin-bottom:.4em;color:#6a2230}
+.letter-paper .signoff{font-family:var(--f-script);font-size:1.8rem;
+  color:var(--rose-deep);margin-top:.5em}
+#letterText{white-space:pre-wrap;min-height:6em}
+.caret{display:inline-block;width:2px;background:#6a2230;
+  animation:blink 1s step-end infinite;vertical-align:-2px}
+@keyframes blink{50%{opacity:0}}
+
+/* ============================================================
+   8 — THE LITTLE THINGS
+   ============================================================ */
+#little .head{text-align:center;margin-bottom:40px}
+#little .eyebrow{color:var(--rose-deep)}
+#little h2{font-family:var(--f-display);font-style:italic;color:var(--ink);
+  font-size:clamp(1.9rem,5.5vw,2.9rem)}
+#little h2 em{font-family:var(--f-script);font-style:normal;color:var(--rose-deep)}
+.notes{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(16px,3vw,28px);
+  align-items:flex-start}
+.note{width:clamp(180px,30%,250px);padding:22px 20px 26px;color:#53391f;
+  font-family:var(--f-type);font-size:.92rem;line-height:1.6;
+  box-shadow:0 12px 24px rgba(90,40,50,.2);position:relative}
+.note.y{background:#fbe9a7}.note.p{background:#f6cdd6}.note.b{background:#bfe0dd}
+.note:nth-child(1){transform:rotate(-3deg)}
+.note:nth-child(2){transform:rotate(2deg);margin-top:20px}
+.note:nth-child(3){transform:rotate(-1deg)}
+.note:nth-child(4){transform:rotate(3deg)}
+.note .pin{position:absolute;top:-10px;left:50%;width:16px;height:16px;margin-left:-8px;
+  border-radius:50%;background:radial-gradient(circle at 38% 34%,#e26275,var(--heart));
+  box-shadow:0 3px 6px rgba(0,0,0,.3)}
+.little-photos{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;
+  margin-top:46px}
+.little-photos .polaroid{width:clamp(130px,24vw,180px)}
+.little-photos .polaroid:nth-child(1){transform:rotate(3deg)}
+.little-photos .polaroid:nth-child(2){transform:rotate(-3deg)}
+.little-photos .polaroid:nth-child(3){transform:rotate(2deg)}
+
+/* ============================================================
+   9 — ENDING / GIFT
+   ============================================================ */
+#ending .wrap{text-align:center;display:flex;flex-direction:column;
+  align-items:center;gap:22px;min-height:80vh;justify-content:center}
+#ending .eyebrow{color:var(--rose)}
+.gift{width:140px;height:132px;position:relative;cursor:pointer;margin:6px 0}
+.gift .box{position:absolute;bottom:0;left:0;right:0;height:92px;border-radius:6px;
+  background:linear-gradient(#8a1f30,#6a1322)}
+.gift .lid{position:absolute;top:28px;left:-6px;right:-6px;height:30px;border-radius:6px;
+  background:linear-gradient(#a3263a,#821c2d);z-index:3;
+  transition:transform .6s cubic-bezier(.3,.8,.2,1)}
+.gift .ribbon{position:absolute;bottom:0;left:50%;width:22px;margin-left:-11px;
+  height:92px;background:var(--gold);z-index:2}
+.gift .bow{position:absolute;top:14px;left:50%;width:46px;height:30px;margin-left:-23px;
+  z-index:4;transition:transform .5s,opacity .5s}
+.gift .bow::before,.gift .bow::after{content:"";position:absolute;top:0;width:22px;
+  height:30px;background:var(--gold);border-radius:60% 60% 40% 40%}
+.gift .bow::before{left:0;transform:rotate(-18deg)}
+.gift .bow::after{right:0;transform:rotate(18deg)}
+.gift.open .lid{transform:translateY(-54px) rotate(-12deg)}
+.gift.open .bow{transform:translateY(-70px) rotate(10deg);opacity:0}
+.gift .sparkle{position:absolute;inset:-30px;z-index:1;opacity:0;
+  transition:opacity .4s}
+.gift.open .sparkle{opacity:1}
+.ending-msg{max-width:46ch;opacity:0;transform:translateY(14px);
+  transition:opacity .7s .2s,transform .7s .2s}
+.ending-msg.show{opacity:1;transform:none}
+.ending-msg .big{font-family:var(--f-script);font-size:clamp(2rem,7vw,3rem);
+  color:var(--gold);display:block;margin-bottom:.2em}
+.ending-hint{font-family:var(--f-type);font-size:.78rem;letter-spacing:.1em;
+  opacity:.7;text-transform:uppercase}
+.sig{font-family:var(--f-script);font-size:1.6rem;color:var(--rose);margin-top:10px}
+
+/* ---------- MOBILE ---------- */
+@media (max-width:760px){
+  body{font-size:17px}
+  #cover .wrap{grid-template-columns:1fr;text-align:center;gap:20px;
+    min-height:auto}
+  .cover-photo{order:-1}
+  #opening .wrap,#song .wrap,#letter .wrap{grid-template-columns:1fr;gap:30px}
+  .open-art{min-height:300px;max-width:360px;margin:0 auto}
+  .reasons-grid{grid-template-columns:repeat(2,1fr)}
+  .letter-art{min-height:300px;max-width:340px;margin:0 auto;order:-1}
+  #song .vinyl-wrap{order:-1}
+  .open-copy,#song>.wrap>div:first-child{text-align:center}
+  .player{margin-inline:auto}
+}
+@media (max-width:420px){
+  .reasons-grid{grid-template-columns:1fr 1fr;gap:14px}
+  .collage .polaroid{width:44%}
+}
+
+/* mute toggle fixed */
+#muteBtn{position:fixed;z-index:20;right:max(14px,env(safe-area-inset-right,0px));
+  bottom:max(14px,env(safe-area-inset-bottom,0px));
+  width:44px;height:44px;border-radius:50%;border:1px solid rgba(246,236,221,.3);
+  background:rgba(50,10,18,.7);color:var(--cream-text);cursor:pointer;
+  display:none;place-items:center;-webkit-backdrop-filter:blur(6px)}
+#muteBtn.show{display:grid}
+#muteBtn svg{width:20px;height:20px}
+</style>
+
+<div class="grain"></div>
+
+<!-- ============ 0 · GATE ============ -->
+<div id="gate">
+  <div class="gate-inner">
+    <div class="gate-title">Surat Kecil Dari Pandu</div>
+    <div class="env" id="envelope" role="button" tabindex="0" aria-label="Buka amplop">
+      <div class="body"><div class="pocket"></div></div>
+      <div class="letter-pop"></div>
+      <div class="flap"></div>
+      <div class="seal">♥</div>
+    </div>
+    <div class="gate-hint">buka amplopnya</div>
+    <button class="gate-btn" id="enterBtn" hidden>masuk →</button>
+  </div>
+</div>
+<canvas id="confetti" hidden></canvas>
+
+<main id="main" aria-hidden="false">
+
+<!-- ============ 1 · COVER ============ -->
+<section id="cover" class="band-maroon">
+  <svg class="decor" style="top:8%;left:4%;width:60px" viewBox="0 0 24 24" fill="none" stroke="#d98c9a" stroke-width="1.3"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg>
+  <svg class="decor" style="bottom:12%;right:6%;width:40px" viewBox="0 0 24 24" fill="#c9a96a"><path d="M12 2l2 7 7 .5-5.5 4.2 2 6.8-5.5-4-5.5 4 2-6.8L3 9.5 10 9z"/></svg>
+  <div class="wrap">
+    <div class="cover-text reveal">
+      <div class="eyebrow">30 · 10 · Ultah nya sayangaku</div>
+      <div class="cover-hi">Happy Birthday,</div>
+      <div class="cover-name" data-k="name">Zahra Deis Salsa Billa</div>
+      <div class="cover-date" data-k="date">Dua puluh empat tahun · aku suka onty onty wkwk</div>
+      <p class="cover-tag" data-k="tagline">Ini surat kecil dari aku buat ngucapin ultah kamu sama ngeliatin momen-momen kita hehehe</p>
+    </div>
+    <div class="cover-photo reveal">
+      <div class="cover-glow"></div>
+      <img src="assets/cover-cut.png" alt="Foto kamu">
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 · SURAT PEMBUKA ============ -->
+<section id="opening" class="band-cream">
+  <div class="wrap">
+    <div class="open-copy reveal">
+      <h2 data-k="openTitle">Sebelum semuanya, aku cuma mau bilang…</h2>
+      <p class="letter-body" data-k="openBody">Makasih udah dateng ke hidup aku, aku bersyukur, aku seneng bisa kenal sama kamu, kamu orang yang paling aku sayang dan aku bakal selalu sayang sama kamu </p>
+    </div>
+    <div class="open-art reveal">
+      <img class="cut c1" src="assets/face-1-cut.png" alt="Foto wajah">
+      <div class="cut c2">
+        <div class="polaroid"><img src="assets/face-2.jpg" alt="Foto wajah"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3 · FAVORITE MOMENTS ============ -->
+<section id="moments" class="band-maroon">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>Galeri <em>Kecil</em> Kita</h2>
+    </div>
+    <div class="collage">
+      <div class="polaroid reveal"><span class="tape" style="top:-12px;left:30%;transform:rotate(-6deg)"></span><img src="assets/moment-1.jpg" alt=""><div class="cap" data-k="m1">❤️</div></div>
+      <div class="polaroid reveal"><span class="tape" style="top:-12px;left:34%;transform:rotate(5deg)"></span><img src="assets/moment-2.jpg" alt=""><div class="cap" data-k="m2">❤️</div></div>
+      <div class="polaroid reveal"><span class="tape" style="top:-12px;left:30%;transform:rotate(-3deg)"></span><img src="assets/moment-3.jpg" alt=""><div class="cap" data-k="m3">❤️</div></div>
+      <div class="polaroid reveal"><span class="tape" style="top:-12px;left:34%;transform:rotate(4deg)"></span><img src="assets/moment-4.jpg" alt=""><div class="cap" data-k="m4">❤️</div></div>
+      <div class="polaroid reveal"><span class="tape" style="top:-12px;left:30%;transform:rotate(-5deg)"></span><img src="assets/moment-5.jpg" alt=""><div class="cap" data-k="m5">❤️</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 · THIS SONG ============ -->
+<section id="song" class="band-maroon" style="background:radial-gradient(130% 90% at 50% 0%,#4a0f1a,#2e0910)">
+  <svg class="decor" style="top:14%;right:8%;width:70px" viewBox="0 0 24 24" fill="#d98c9a" opacity=".8"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>
+  <div class="wrap">
+    <div class="reveal">
+      <h2 data-k="songTitle">Lagu yang bikin aku inget kamu</h2>
+      <p class="ded" data-k="songDed">“Kita suka nyanyi bareng dan terngiang-ngiang sama lagu ini wkwk”</p>
+      <div class="player">
+        <button class="play-btn" id="playBtn" aria-label="Putar lagu">
+          <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="track-meta">
+          <div class="track-title" data-k="trackName">Terong Dicabein</div>
+          <div class="track-sub" data-k="trackArtist">Siti Badriah · lagu kita</div>
+        </div>
+      </div>
+    </div>
+    <div class="vinyl-wrap reveal">
+      <div class="vinyl" id="vinyl"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 · REASONS ============ -->
+<section id="reasons" class="band-cream">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>reason I <em>love</em> you</h2>
+    </div>
+    <div class="reasons-grid">
+      <div class="reason reveal"><div class="frame"><img src="assets/reason-1.jpg" alt=""></div><span class="n"></span><p data-k="r1">Dari awal aku ketemu kamu aku ngerasa kita klop dan aku langsung suka kamu hehehe</p></div>
+      <div class="reason reveal"><div class="frame"><img src="assets/reason-2.jpg" alt=""></div><span class="n"></span><p data-k="r2">Kamu beneran peduli sama aku, dan aku first time menceritakan kondisi keluarga aku ke perempuan sampe aku nangis wkwk</p></div>
+      <div class="reason reveal"><div class="frame"><img src="assets/reason-3.jpg" alt=""></div><span class="n"></span><p data-k="r3">Kamu lucu kamu baik dan aku kalo lagi berdua sama kamu aku ngerasa tenang, nyaman walaupun kita ga ngapa-ngapain aku ngerasa tenang</p></div>
+      <div class="reason reveal"><div class="frame"><img src="assets/reason-4.jpg" alt=""></div><span class="n"></span><p data-k="r4">Dari awal aku kenal kamu aku tau kamu orang yang kuat, dan aku kagum sama kamu, itu bikin aku makin sayang sama kamu</p></div>
+      <div class="reason reveal"><div class="frame"><img src="assets/reason-5.jpg" alt=""></div><span class="n"></span><p data-k="r5">Kamu selalu excited, manja, ceria kalau ada aku dan sama aku, aku ngerasa seneng kalau kamu kaya gitu</p></div>
+      <div class="reason reveal"><div class="frame"><img src="assets/reason-6.jpg" alt=""></div><span class="n"></span><p data-k="r6">Dan kamu bikin aku ngerasa ada orang yang beneran sayang, peduli sama aku, terimakasih yaa :)</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 · 3 WORDS ============ -->
+<section id="words" class="band-maroon">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>if I had to describe you in three words</h2>
+    </div>
+    <div class="words-row">
+      <div class="word reveal"><div class="polaroid"><img src="assets/reason-2.jpg" alt=""></div><span class="w" data-k="w1">lucu</span></div>
+      <div class="word reveal"><div class="polaroid"><img src="assets/reason-4.jpg" alt=""></div><span class="w" data-k="w2">hangat</span></div>
+      <div class="word reveal"><div class="polaroid"><img src="assets/reason-6.jpg" alt=""></div><span class="w" data-k="w3">rumah</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 · LETTER ============ -->
+<section id="letter" class="band-maroon" style="background:radial-gradient(130% 90% at 50% 0%,#6d1927,#3a0b13)">
+  <div class="wrap">
+    <div class="letter-art reveal">
+      <div class="polaroid p1"><span class="tape" style="top:-10px;left:34%"></span><img src="assets/letter-1.jpg" alt=""></div>
+      <div class="polaroid p2"><span class="tape" style="top:-10px;left:34%;transform:rotate(6deg)"></span><img src="assets/letter-2.jpg" alt=""></div>
+      <div class="polaroid p3"><span class="tape" style="top:-10px;left:34%;transform:rotate(-4deg)"></span><img src="assets/letter-3.jpg" alt=""></div>
+    </div>
+    <div class="letter-paper reveal">
+      <h2 data-k="letterTitle">A letter for you,</h2>
+      <div class="letter-body" id="letterText"></div>
+      <div class="signoff" data-k="letterSign">— PANDU</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 · LITTLE THINGS ============ -->
+<section id="little" class="band-cream">
+  <div class="wrap">
+    <div class="head reveal">
+      <h2>the little things <em>you do</em> that make me smile</h2>
+    </div>
+    <div class="notes">
+      <div class="note y reveal"><span class="pin"></span><span data-k="n1">Terimakasih sudah selalu sayang aku</span></div>
+      <div class="note p reveal"><span class="pin"></span><span data-k="n2">Terimakasih sudah selalu sabar sama aku</span></div>
+      <div class="note b reveal"><span class="pin"></span><span data-k="n3">Terimakasih sudah selalu ngalah buat aku</span></div>
+      <div class="note y reveal"><span class="pin"></span><span data-k="n4">Terimakasih sudah selalu ada buat aku</span></div>
+    </div>
+    <div class="little-photos">
+      <div class="polaroid reveal"><img src="assets/little-1.jpg" alt=""></div>
+      <div class="polaroid reveal"><img src="assets/little-2.jpg" alt=""></div>
+      <div class="polaroid reveal"><img src="assets/little-3.jpg" alt=""></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9 · ENDING ============ -->
+<section id="ending" class="band-maroon" style="background:radial-gradient(120% 90% at 50% 30%,#6d1927,#2e0910)">
+  <div class="wrap">
+    <div class="eyebrow reveal">satu kejutan terakhir</div>
+    <div class="gift" id="gift" role="button" tabindex="0" aria-label="Buka kado">
+      <svg class="sparkle" viewBox="0 0 120 120" fill="#c9a96a"><path d="M60 10l3 12 12 3-12 3-3 12-3-12-12-3 12-3z"/><path d="M100 50l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/><path d="M18 60l2 7 7 2-7 2-2 7-2-7-7-2 7-2z"/></svg>
+      <div class="bow"></div>
+      <div class="ribbon"></div>
+      <div class="lid"></div>
+      <div class="box"></div>
+    </div>
+    <div class="ending-hint" id="giftHint">ketuk kadonya</div>
+    <div class="ending-msg" id="endMsg">
+      <span class="big" data-k="endBig">Selamat ulang tahun, sayang.</span>
+      <p class="letter-body" data-k="endBody">Selamat ulang tahun yang ke 24 sayang semoga di umur kamu yg ke 24 ini kamu bisa lebih bahagia lagi dan semoga semua impian kamu bisa terwujud. segala urusan yang kamu hadapi semoga di permudah dan dilancarkan semoga rezeki kamu juga di limpahkan yaa aminnnn, walaupun keadaan kita sekarang kaya gini aku masih sayang kamu dan selalu sayang kamu zahra, kamu semangat terus yaa buat ngejalanin apapun hal yang lagi dan akan kamu jalani.    HAPPY BIRTHDAY! SAYANGGGG</p>
+      <div class="sig" data-k="endSign">dari Gempii</div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<button id="muteBtn" aria-label="Matikan musik">
+  <svg id="muteIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15 9a4 4 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+</button>
+
+<audio id="bgm" loop preload="none"></audio>
+
+<script>
+/* ============================================================
+   CONFIG — GANTI SEMUA TEKS & MUSIK DI SINI
+   (foto diganti dengan menimpa file di folder /assets)
+   ============================================================ */
+const CONFIG = {
+  // nama file lagu yang kamu taruh di /assets (mis. "lagu.mp3"). Kosongkan jika belum ada.
+  musicFile: "assets/lagu.mp3",   // lagu kalian
+
+  // Isi surat panjang (section 7). Pakai \n untuk ganti baris.
+  letterText:
+`Halo, sayang.
+aku gajago mengungkapkan ga kaya kamu yang jago buat puisi jago bikin letter, disini aku mau ngomong dikit aja
+
+Selamat ulang tahun ya. Semoga hari ini menyenangkan buat kamu, dan semoga tahun ini lebih baik dari tahun-tahun sebelumnya. Aku senang bisa kenal sama kamu, dan aku bersyukur bisa punya kamu di hidup aku. aku tau aku banyak nyakitin kamu dan aku minta maaf yaa aku udah gabisa ngomong panjang lebar lagi walaupun sebenernya isi hati aku banyak yg mau di sampein`,
+};
+
+/* ---------- isi teks dari CONFIG (opsional override via data-k nanti) ---------- */
+/* Teks default sudah ada di HTML sebagai placeholder; hanya surat & lagu diisi dari JS. */
+
+/* ---------- GATE / AMPLOP ---------- */
+const gate=document.getElementById('gate');
+const env=document.getElementById('envelope');
+const enterBtn=document.getElementById('enterBtn');
+const bgm=document.getElementById('bgm');
+const muteBtn=document.getElementById('muteBtn');
+document.body.classList.add('locked');
+
+let opened=false;
+function openEnvelope(){
+  if(opened) return; opened=true;
+  env.classList.add('open');
+  burstConfetti();
+  enterBtn.hidden=false;
+  // coba mulai musik (butuh gesture user — ini dipicu klik)
+  startMusic();
+}
+function enterSite(){
+  gate.classList.add('gone');
+  document.body.classList.remove('locked');
+  if(CONFIG.musicFile) muteBtn.classList.add('show');
+  // setelah masuk, picu reveal untuk yang sudah di viewport
+  setTimeout(()=>onScroll(),50);
+}
+env.addEventListener('click',openEnvelope);
+env.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openEnvelope();}});
+enterBtn.addEventListener('click',enterSite);
+
+/* ---------- MUSIK ---------- */
+let musicReady=false;
+function startMusic(){
+  if(!CONFIG.musicFile) return;
+  if(!musicReady){bgm.src=CONFIG.musicFile;musicReady=true;}
+  bgm.volume=0.0;
+  bgm.play().then(()=>{ // fade in
+    let v=0;const t=setInterval(()=>{v=Math.min(.6,v+.04);bgm.volume=v;if(v>=.6)clearInterval(t);},80);
+  }).catch(()=>{});
+}
+muteBtn.addEventListener('click',()=>{
+  if(bgm.paused){bgm.play().catch(()=>{});setMuteIcon(false);}
+  else{bgm.pause();setMuteIcon(true);}
+});
+function setMuteIcon(muted){
+  muteBtn.querySelector('svg').style.opacity=muted?.5:1;
+}
+
+/* ---------- CONFETTI (canvas, tanpa library) ---------- */
+function burstConfetti(){
+  const c=document.getElementById('confetti');
+  c.hidden=false;
+  const ctx=c.getContext('2d');
+  const dpr=Math.min(2,window.devicePixelRatio||1);
+  function size(){c.width=innerWidth*dpr;c.height=innerHeight*dpr;}
+  size();
+  const colors=['#d98c9a','#c9a96a','#c02a3c','#f3e7d3','#b2495b'];
+  const N=window.matchMedia('(prefers-reduced-motion:reduce)').matches?0:140;
+  const parts=[];
+  for(let i=0;i<N;i++){
+    parts.push({x:Math.random()*c.width,y:-Math.random()*c.height*.4,
+      r:(4+Math.random()*6)*dpr,c:colors[i%colors.length],
+      vy:(2+Math.random()*3)*dpr,vx:(Math.random()-.5)*2*dpr,
+      rot:Math.random()*6,vr:(Math.random()-.5)*.3,
+      shape:Math.random()<.5?'rect':'heart'});
+  }
+  let t=0;
+  function heart(x,y,s){ctx.beginPath();
+    ctx.moveTo(x,y+s*.3);
+    ctx.bezierCurveTo(x,y,x-s,y,x-s,y+s*.3);
+    ctx.bezierCurveTo(x-s,y+s*.6,x,y+s*.9,x,y+s*1.1);
+    ctx.bezierCurveTo(x,y+s*.9,x+s,y+s*.6,x+s,y+s*.3);
+    ctx.bezierCurveTo(x+s,y,x,y,x,y+s*.3);ctx.fill();}
+  function frame(){
+    ctx.clearRect(0,0,c.width,c.height);t++;
+    let alive=false;
+    for(const p of parts){
+      p.y+=p.vy;p.x+=p.vx;p.rot+=p.vr;p.vy+=.03*dpr;
+      if(p.y<c.height+40){alive=true;}
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.fillStyle=p.c;
+      ctx.globalAlpha=Math.max(0,1-t/320);
+      if(p.shape==='rect')ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);
+      else heart(0,-p.r/2,p.r*.5);
+      ctx.restore();
+    }
+    if(alive&&t<340)requestAnimationFrame(frame);
+    else c.hidden=true;
+  }
+  if(N>0)requestAnimationFrame(frame);
+  addEventListener('resize',size,{once:true});
+}
+
+/* ---------- SCROLL REVEAL ---------- */
+const reveals=[...document.querySelectorAll('.reveal')];
+let io;
+if('IntersectionObserver' in window){
+  io=new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);
+      if(e.target.closest('#letter'))typeLetter();
+      if(e.target.closest('#song'))spinVinyl(true);
+    }});
+  },{threshold:.18});
+  reveals.forEach(r=>io.observe(r));
+}else{reveals.forEach(r=>r.classList.add('in'));}
+function onScroll(){/* fallback trigger */
+  reveals.forEach(r=>{const b=r.getBoundingClientRect();
+    if(b.top<innerHeight*.85)r.classList.add('in');});
+}
+
+/* ---------- TYPEWRITER (surat) ---------- */
+let typed=false;
+function typeLetter(){
+  if(typed)return;typed=true;
+  const el=document.getElementById('letterText');
+  const txt=CONFIG.letterText||'';
+  if(window.matchMedia('(prefers-reduced-motion:reduce)').matches){el.textContent=txt;return;}
+  const caret=document.createElement('span');caret.className='caret';caret.innerHTML='&nbsp;';
+  el.textContent='';el.appendChild(caret);
+  let i=0;
+  (function step(){
+    if(i<txt.length){caret.insertAdjacentText('beforebegin',txt[i]);i++;
+      setTimeout(step,txt[i-1]==='\n'?120:22);}
+    else{setTimeout(()=>caret.remove(),1200);}
+  })();
+}
+
+/* ---------- VINYL + PLAYER ---------- */
+const vinyl=document.getElementById('vinyl');
+const playBtn=document.getElementById('playBtn');
+const playIcon=document.getElementById('playIcon');
+let playing=false;
+function spinVinyl(on){if(on)vinyl.classList.add('playing');else vinyl.classList.remove('playing');}
+playBtn.addEventListener('click',()=>{
+  playing=!playing;
+  if(playing){
+    playIcon.innerHTML='<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+    spinVinyl(true);
+    if(CONFIG.musicFile){if(!musicReady)startMusic();else bgm.play().catch(()=>{});}
+  }else{
+    playIcon.innerHTML='<path d="M8 5v14l11-7z"/>';
+    spinVinyl(false);
+    if(CONFIG.musicFile)bgm.pause();
+  }
+});
+
+/* ---------- GIFT ---------- */
+const gift=document.getElementById('gift');
+const endMsg=document.getElementById('endMsg');
+const giftHint=document.getElementById('giftHint');
+function openGift(){
+  gift.classList.add('open');
+  endMsg.classList.add('show');
+  giftHint.style.opacity='0';
+}
+gift.addEventListener('click',openGift);
+gift.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openGift();}});
+
+/* ---------- PARALLAX decor (tipis) ---------- */
+if(!window.matchMedia('(prefers-reduced-motion:reduce)').matches){
+  const decors=[...document.querySelectorAll('.decor')];
+  addEventListener('scroll',()=>{
+    const y=scrollY;
+    decors.forEach((d,i)=>{d.style.transform=`translateY(${y*(0.03+0.02*(i%3))}px)`;});
+  },{passive:true});
+}
+</script>
+
+</body></html>
